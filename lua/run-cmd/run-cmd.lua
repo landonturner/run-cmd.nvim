@@ -14,6 +14,7 @@ local function run_last_command()
 end
 
 function M.setup()
+	print("Running setup now")
 	wk.add({
 		{ "<leader>r", group = "Run Command", icon = icons.get_icon("zsh") },
 		{
