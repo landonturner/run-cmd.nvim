@@ -9,12 +9,20 @@ local function tmux_command(command)
 	return vim.fn.system("tmux -S " .. tmux_socket .. " " .. command)
 end
 
+local function run_command_in_pane(command)
+	tmux_command("send-keys -t right C-c " .. command .. " C-m")
+end
+
 local function run_last_command()
-	tmux_command("send-keys -t right C-c \\!\\! C-m")
+	run_command_in_pane("\\!\\!")
+end
+
+local function run_jest_test()
+	local current_file = vim.api.nvim_buf_get_name(0)
+	run_command_in_pane("jest\\ " .. current_file)
 end
 
 function M.setup()
-	print("Running setup now")
 	wk.add({
 		{ "<leader>r", group = "Run Command", icon = icons.get_icon("zsh") },
 		{
@@ -23,6 +31,23 @@ function M.setup()
 				run_last_command()
 			end,
 			desc = "Run Last Command",
+			icon = "󱈸󱈸",
+		},
+		{
+			"<leader>rj",
+			function()
+				run_command_in_pane("jest")
+			end,
+			desc = "Run Jest",
+			icon = "󰙨",
+		},
+		{
+			"<leader>rt",
+			function()
+				run_jest_test()
+			end,
+			desc = "Run Current Test",
+			icon = "󰙨",
 		},
 	})
 end
